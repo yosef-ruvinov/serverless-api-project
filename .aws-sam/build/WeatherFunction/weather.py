@@ -2,27 +2,23 @@ import json
 import boto3  
 import os  
 from datetime import datetime  
-from uuid import uuid4  # For unique IDs if needed  
+from botocore.exceptions import ClientError  
 
 dynamodb = boto3.resource('dynamodb')  
 table_name = os.environ['TABLE_NAME']  
 
 def handler(event, context):  
-    # Get city from query params (from API Gateway event)  
-    city = event.get('queryStringParameters', {}).get('city', 'London')  # Default to London  
+    city = event.get('queryStringParameters', {}).get('city', 'London')  
+    if not city:  
+        return {'statusCode': 400, 'body': json.dumps({'error': 'City required'})}  
 
-    # Generate mock weather data  
     mock_weather = {  
         'city': city,  
-        'temperature': 20,  # Fixed mock; or random: import random; random.randint(10, 30)  
+        'temperature': 20,  
         'humidity': 60,  
         'description': 'Partly cloudy'  
     }  
-
-    # Real-time timestamp  
     timestamp = datetime.utcnow().isoformat() + 'Z'  
-
-    # Prepare DynamoDB item  
     item = {  
         'pk': f'weather#{city}',  
         'timestamp': timestamp,  
@@ -30,12 +26,10 @@ def handler(event, context):
         'data': mock_weather  
     }  
 
-    # Put item in DynamoDB  
-    table = dynamodb.Table(table_name)  
-    table.put_item(Item=item)  
+    try:  
+        table = dynamodb.Table(table_name)  
+        table.put_item(Item=item)  
+    except ClientError as e:  
+        return {'statusCode': 500, 'body': json.dumps({'error': f'DynamoDB error: {str(e)}'})}  
 
-    # Return response  
-    return {  
-        'statusCode': 200,  
-        'body': json.dumps(mock_weather)  
-    }  
+    return {'statusCode': 200, 'body': json.dumps(mock_weather)}  
