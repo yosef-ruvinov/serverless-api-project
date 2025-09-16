@@ -12,5 +12,29 @@ Resources:
         Variables:
           TABLE_NAME: apiData
       Policies: AmazonDynamoDBFullAccess
+      Events:
+        WeatherApi:
+          Type: Api
+          Properties:
+            Path: /weather
+            Method: get
     Metadata:
       SamResourceId: WeatherFunction
+  CalcFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: CalcFunction
+      Handler: calc.handler
+      Runtime: python3.13
+      Environment:
+        Variables:
+          TABLE_NAME: apiData
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        CalcApi:
+          Type: Api
+          Properties:
+            Path: /calculate
+            Method: post
+    Metadata:
+      SamResourceId: CalcFunction

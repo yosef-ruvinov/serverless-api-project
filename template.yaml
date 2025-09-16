@@ -6,9 +6,31 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src
-      Handler: weather.handler # Means: src/weather.py file, def handler() function
+      Handler: weather.handler
       Runtime: python3.13
       Environment:
         Variables:
-          TABLE_NAME: apiData # References your DynamoDB table
-      Policies: AmazonDynamoDBFullAccess # Gives Lambda DynamoDB access (broad for now)
+          TABLE_NAME: apiData
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        WeatherApi:
+          Type: Api
+          Properties:
+            Path: /weather
+            Method: get
+  CalcFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src
+      Handler: calc.handler
+      Runtime: python3.13
+      Environment:
+        Variables:
+          TABLE_NAME: apiData
+      Policies: AmazonDynamoDBFullAccess
+      Events:
+        CalcApi:
+          Type: Api
+          Properties:
+            Path: /calculate
+            Method: post

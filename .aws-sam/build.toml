@@ -7,6 +7,6 @@ architecture = "x86_64"
 handler = "weather.handler"
 manifest_hash = ""
 packagetype = "Zip"
-functions = ["WeatherFunction"]
+functions = ["WeatherFunction", "CalcFunction"]
 
 [layer_build_definitions]
