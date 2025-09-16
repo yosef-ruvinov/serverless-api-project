@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless API Project - Weather Lambda
+Resources:
+  WeatherFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./src
+      Handler: weather.handler # Means: src/weather.py file, def handler() function
+      Runtime: python3.13
+      Environment:
+        Variables:
+          TABLE_NAME: apiData # References your DynamoDB table
+      Policies: AmazonDynamoDBFullAccess # Gives Lambda DynamoDB access (broad for now)
