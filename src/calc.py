@@ -1,7 +1,7 @@
 import json
 import boto3
 import os
-from datetime import datetime
+from datetime import datetime, UTC 
 from uuid import uuid4
 from botocore.exceptions import ClientError
 
@@ -24,7 +24,7 @@ def handler(event, context):
         elif operation == 'subtract': result -= num
         elif operation == 'multiply': result *= num
 
-    timestamp = datetime.utcnow().isoformat() + 'Z'
+    timestamp = datetime.now(UTC).isoformat() + 'Z'  
     item = {
         'pk': f'calc#{str(uuid4())}',
         'timestamp': timestamp,
