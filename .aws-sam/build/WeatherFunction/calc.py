@@ -6,9 +6,11 @@ from uuid import uuid4
 from botocore.exceptions import ClientError
 
 dynamodb = boto3.resource('dynamodb')
+cloudwatch = boto3.client('cloudwatch')
 table_name = os.environ['TABLE_NAME']
 
 def handler(event, context):
+    start_time = datetime.now(UTC)
     body = json.loads(event.get('body', '{}'))
     operation = body.get('operation')
     numbers = body.get('numbers', [])
@@ -39,6 +41,16 @@ def handler(event, context):
         table.put_item(Item=item)
     except ClientError as e:
         return {'statusCode': 500, 'body': json.dumps({'error': f'DynamoDB error: {str(e)}'})}
+    
+    latency = (datetime.now(UTC) - start_time).total_seconds() * 1000  # ms
+    cloudwatch.put_metric_data(
+        Namespace='ServerlessAPI',
+        MetricData=[{
+            'MetricName': 'CalcLatency',
+            'Value': latency,
+            'Unit': 'Milliseconds'
+        }]
+    )
 
     return {
         'statusCode': 200,

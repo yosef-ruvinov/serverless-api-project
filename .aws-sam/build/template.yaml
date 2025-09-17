@@ -8,10 +8,13 @@ Resources:
       CodeUri: WeatherFunction
       Handler: weather.handler
       Runtime: python3.13
+      MemorySize: 256
       Environment:
         Variables:
           TABLE_NAME: apiData
-      Policies: AmazonDynamoDBFullAccess
+      Policies:
+      - AmazonDynamoDBFullAccess
+      - CloudWatchFullAccess
       Events:
         WeatherApi:
           Type: Api
@@ -26,10 +29,13 @@ Resources:
       CodeUri: CalcFunction
       Handler: calc.handler
       Runtime: python3.13
+      MemorySize: 256
       Environment:
         Variables:
           TABLE_NAME: apiData
-      Policies: AmazonDynamoDBFullAccess
+      Policies:
+      - AmazonDynamoDBFullAccess
+      - CloudWatchFullAccess
       Events:
         CalcApi:
           Type: Api
