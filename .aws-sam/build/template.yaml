@@ -38,3 +38,8 @@ Resources:
             Method: post
     Metadata:
       SamResourceId: CalcFunction
+Outputs:
+  ServerlessRestApi:
+    Description: API Gateway endpoint URL for Prod stage
+    Value:
+      Fn::Sub: https://y5k1lldivb.execute-api.il-central-1.amazonaws.com/Prod
