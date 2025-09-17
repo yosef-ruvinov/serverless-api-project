@@ -1,7 +1,15 @@
-# serverless-api-project
-A serverless RESTful API powered by AWS Lambda (Python/Boto3), API Gateway, and DynamoDB. Fetches real-time weather data and stores request metadata, with automated CI/CD via GitHub Actions.
+# Serverless API Project
+
+A serverless REST API built with AWS SAM, Python 3.13, and DynamoDB.
+
+- Endpoints: GET /weather (mock weather), POST /calculate (math ops).
+- Deployed: Staging (serverless-api-staging), Production (serverless-api-prod) in il-central-1.
+- CI/CD: GitHub Actions (deploy.yml).
+- Monitoring: CloudWatch (WeatherLatency, CalcLatency, alarm >500ms).
+- Tests: pytest unit tests, Locust load tests (~50 reqs, 0% fails).
 
 ## Requirements
+
 - **Endpoints**:  
   | Endpoint | Method | Description | Input | Output |  
   |----------|--------|-------------|-------|--------|  
@@ -13,13 +21,15 @@ A serverless RESTful API powered by AWS Lambda (Python/Boto3), API Gateway, and 
 - **Notes**: Weather uses hardcoded mock data in Lambda for simplicity and zero cost.
 
 ## Architecture
+
 High-level serverless flow using AWS services with mock data:  
 ![Architecture Diagram](docs/architecture.png)
 
-## Data Model  
-- **Table**: apiData (DynamoDB, single-table design).  
-- **Keys**: Partition Key = 'pk' (e.g., 'weather#city' or 'calc#id'), Sort Key = 'timestamp' (for history sorting).  
-- **Example Items**:  
-  - Weather: `{"pk": "weather#London", "timestamp": "...", "type": "weather", "data": {"temperature": 20, ...}}`  
-  - Calculation: `{"pk": "calc#uuid-123", "timestamp": "...", "type": "calc", "operation": "add", "result": 5}`  
-- **Notes**: Uses on-demand billing for scalability; mock data stored as-is.  
+## Data Model
+
+- **Table**: apiData (DynamoDB, single-table design).
+- **Keys**: Partition Key = 'pk' (e.g., 'weather#city' or 'calc#id'), Sort Key = 'timestamp' (for history sorting).
+- **Example Items**:
+  - Weather: `{"pk": "weather#London", "timestamp": "...", "type": "weather", "data": {"temperature": 20, ...}}`
+  - Calculation: `{"pk": "calc#uuid-123", "timestamp": "...", "type": "calc", "operation": "add", "result": 5}`
+- **Notes**: Uses on-demand billing for scalability; mock data stored as-is.
