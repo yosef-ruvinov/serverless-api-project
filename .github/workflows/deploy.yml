@@ -1,4 +1,3 @@
-# Updated CI/CD for serverless-api-staging
 name: Deploy to AWS
 on:
   push:
