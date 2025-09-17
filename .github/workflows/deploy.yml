@@ -18,4 +18,4 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: il-central-1
       - run: sam build
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+      - run: sam deploy --stack-name serverless-api-staging --region il-central-1 --no-confirm-changeset --no-fail-on-empty-changeset --capabilities CAPABILITY_IAM
