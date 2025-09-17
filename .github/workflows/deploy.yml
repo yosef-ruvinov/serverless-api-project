@@ -19,3 +19,20 @@ jobs:
           aws-region: il-central-1
       - run: sam build
       - run: sam deploy --stack-name serverless-api-staging --region il-central-1 --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-cfc57lijl025 --no-confirm-changeset --no-fail-on-empty-changeset --capabilities CAPABILITY_IAM
+  deploy-prod:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: il-central-1
+      - run: sam build
+      - run: sam deploy --stack-name serverless-api-prod --region il-central-1 --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-cfc57lijl025 --no-confirm-changeset --no-fail-on-empty-changeset --capabilities CAPABILITY_IAM

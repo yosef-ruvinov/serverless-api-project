@@ -2,8 +2,16 @@ version = 0.1
 
 [default.deploy.parameters]
 stack_name = "serverless-api-staging"
-resolve_s3 = false
-s3_prefix = "serverless-api-staging"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-cfc57lijl025"
 region = "il-central-1"
 capabilities = "CAPABILITY_IAM"
-image_repositories = []
+confirm_changeset = false
+fail_on_empty_changeset = false
+
+[default.prod.parameters]
+stack_name = "serverless-api-prod"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-cfc57lijl025"
+region = "il-central-1"
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = false
+fail_on_empty_changeset = false
