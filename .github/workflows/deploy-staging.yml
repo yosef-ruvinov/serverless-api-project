@@ -1,4 +1,4 @@
-name: Deploy to AWS
+name: Deploy to AWS Staging
 on:
   push:
     branches: [main]
@@ -19,4 +19,3 @@ jobs:
           aws-region: il-central-1
       - run: sam build
       - run: sam deploy --stack-name serverless-api-staging --region il-central-1 --s3-bucket aws-sam-cli-managed-default-samclisourcebucket-cfc57lijl025 --no-confirm-changeset --no-fail-on-empty-changeset --capabilities CAPABILITY_IAM
-#Test
