@@ -3,13 +3,16 @@
 This document outlines the end-to-end procedure to run the serverless API project (GET /weather, POST /calculate) from a clean environment, ensuring no conflicts with existing AWS resources or processes. It uses AWS SAM, Python 3.13, DynamoDB, and GitHub Actions, as built over 10 days.
 
 ## Prerequisites
+
 - **Tools**: AWS CLI, SAM CLI, Python 3.13, Git, Bash (Git Bash on Windows).
 - **AWS Account**: Configured with IAM user (serverless-dev-user, AdministratorAccess).
 - **GitHub Repo**: Cloned from your repository (contains `src/`, `template.yaml`, `deploy.yml`).
 - **Environment**: Windows (MINGW64) at `~/Desktop/devops/projects/serverless-api-project`.
 
 ## Procedure
+
 ### 1. Validate Clean Environment
+
 Ensure no conflicting AWS resources or processes exist to avoid errors.
 
 ```bash
@@ -41,9 +44,10 @@ aws sts get-caller-identity
 ```
 
 ### 2. Clone and Set Up Project
+
 ```bash
 # Clone repo (replace with your GitHub URL)
-git clone <your-repo-url> serverless-api-project
+git clone https://github.com/yosef-ruvinov/serverless-api-project.git serverless-api-project
 cd serverless-api-project
 
 # Install dependencies
@@ -51,14 +55,18 @@ pip install boto3 pytest moto[dynamodb] locust
 ```
 
 ### 3. Run Unit Tests
+
 Validate Lambda logic locally with pytest and moto.
+
 ```bash
 PYTHONPATH=$(pwd) pytest tests/
 # Expected: "2 passed" (test_weather.py, test_calc.py)
 ```
 
 ### 4. Deploy to Production
+
 Deploy the API to AWS (production stack).
+
 ```bash
 sam build
 sam deploy --stack-name serverless-api-prod --region il-central-1 --resolve-s3 --no-confirm-changeset --no-fail-on-empty-changeset --capabilities CAPABILITY_IAM
@@ -66,12 +74,14 @@ sam deploy --stack-name serverless-api-prod --region il-central-1 --resolve-s3 -
 ```
 
 ### 5. Get API Gateway URL
+
 ```bash
 aws apigateway get-rest-apis --region il-central-1 --query 'items[?contains(name, `serverless-api-prod`)].{id:id}'
 # Construct URL: https://<id>.execute-api.il-central-1.amazonaws.com/Prod/
 ```
 
 ### 6. Test Live API
+
 ```bash
 # GET /weather
 curl "https://<id>.execute-api.il-central-1.amazonaws.com/Prod/weather?city=London"
@@ -87,12 +97,14 @@ curl -X POST -H "Content-Type: application/json" -d '{"operation": "divide"}' "h
 ```
 
 ### 7. Verify DynamoDB Writes
+
 ```bash
 aws dynamodb scan --table-name apiData --region il-central-1 --query 'Items[?pk.S==`weather#London` || starts_with(pk.S, `calc#`)].{pk:pk.S,timestamp:timestamp.S}'
 # Expected: Items like {"pk": "weather#London", "timestamp": "..."}, {"pk": "calc#<uuid>", "timestamp": "..."}
 ```
 
 ### 8. Check CloudWatch Metrics and Alarms
+
 ```bash
 # Metrics
 aws cloudwatch get-metric-statistics --namespace ServerlessAPI --metric-name WeatherLatency --start-time 2025-09-18T00:00:00Z --end-time 2025-09-18T23:59:59Z --period 60 --statistics Average --region il-central-1
@@ -104,6 +116,7 @@ aws cloudwatch describe-alarms --alarm-names WeatherLatencyHigh --region il-cent
 ```
 
 ### Functionality Flow
+
 1. Client sends HTTP request (GET /weather or POST /calculate) to API Gateway.
 2. API Gateway routes to Lambda (WeatherFunction or CalcFunction).
 3. Lambda processes request (mock weather or math calc), writes to DynamoDB (`apiData`), logs latency to CloudWatch.
@@ -111,6 +124,7 @@ aws cloudwatch describe-alarms --alarm-names WeatherLatencyHigh --region il-cent
 5. CloudWatch monitors latency; alarms trigger if >500ms.
 
 ## Notes
+
 - **Costs**: Free tier (~$0 for low usage).
 - **Demo**: Show GitHub repo, run curl commands, check DynamoDB/CloudWatch in AWS Console.
 - **Troubleshooting**: Check CloudWatch logs (/aws/lambda/WeatherFunction, CalcFunction) for errors.

@@ -1,7 +1,7 @@
 from locust import HttpUser, task, between
 
 class ApiUser(HttpUser):
-    wait_time = between(1, 3)  # Random wait between requests (1-3s)
+    wait_time = between(1, 3)  
 
     @task
     def get_weather(self):

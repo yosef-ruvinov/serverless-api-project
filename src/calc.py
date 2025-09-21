@@ -42,7 +42,7 @@ def handler(event, context):
     except ClientError as e:
         return {'statusCode': 500, 'body': json.dumps({'error': f'DynamoDB error: {str(e)}'})}
     
-    latency = (datetime.now(UTC) - start_time).total_seconds() * 1000  # ms
+    latency = (datetime.now(UTC) - start_time).total_seconds() * 1000  
     cloudwatch.put_metric_data(
         Namespace='ServerlessAPI',
         MetricData=[{
