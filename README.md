@@ -1,5 +1,8 @@
 # Serverless API Project
 
+This project is for portfolio purposes only and not licensed for public use.
+Contact: [My LinkedIn](http://www.linkedin.com/in/yosef-ruvinov) for access or questions.
+
 A serverless REST API built with AWS SAM, Python 3.13, and DynamoDB.
 
 - Endpoints: GET /weather (mock weather), POST /calculate (math ops).
@@ -33,3 +36,5 @@ High-level serverless flow using AWS services with mock data:
   - Weather: `{"pk": "weather#London", "timestamp": "...", "type": "weather", "data": {"temperature": 20, ...}}`
   - Calculation: `{"pk": "calc#uuid-123", "timestamp": "...", "type": "calc", "operation": "add", "result": 5}`
 - **Notes**: Uses on-demand billing for scalability; mock data stored as-is.
+
+[def]: http://www.linkedin.com/in/yosef-ruvinov
